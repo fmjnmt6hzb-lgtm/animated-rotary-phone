@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>學期成績計算器</title>
+    <style>
+        body { font-family: sans-serif; background-color: #f4f7f6; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .container { background-color: #ffffff; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 500px; width: 100%; }
+        h2 { text-align: center; color: #333; margin-bottom: 25px; }
+        .form-group { margin-bottom: 15px; }
+        .input-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+        label { font-weight: bold; color: #555; flex: 1; }
+        input[type="number"] { width: 100px; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; }
+        input[type="number"]:disabled { background-color: #e9ecef; color: #6c757d; }
+        .checkbox-container { display: flex; align-items: center; gap: 5px; font-size: 13px; color: #666; width: 110px; }
+        button { width: 100%; padding: 12px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; margin-top: 15px; }
+        button:hover { background-color: #45a049; }
+        .result-box { margin-top: 20px; padding: 15px; border-radius: 4px; display: none; font-weight: bold; line-height: 1.6; }
+        .pass { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .warning { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+        .fail { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>學期成績計算器</h2>
+    <div class="form-group">
+        <div class="input-row">
+            <label for="scoreA">始業考成績 (5%)：</label>
+            <input type="number" id="scoreA" min="0" max="100" placeholder="0-100">
+            <div class="checkbox-container">
+                <input type="checkbox" id="noneA" onchange="toggleInput('scoreA', this)">
+                <label for="noneA">無此成績</label>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="input-row">
+            <label for="scoreB">一段成績 (20%)：</label>
+            <input type="number" id="scoreB" min="0" max="100" placeholder="0-100">
+            <div class="checkbox-container">
+                <input type="checkbox" id="noneB" onchange="toggleInput('scoreB', this)">
+                <label for="noneB">無此成績</label>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="input-row">
+            <label for="scoreC">二段成績 (20%)：</label>
+            <input type="number" id="scoreC" min="0" max="100" placeholder="0-100">
+            <div class="checkbox-container">
+                <input type="checkbox" id="noneC" onchange="toggleInput('scoreC', this)">
+                <label for="noneC">無此成績</label>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="input-row">
+            <label for="scoreD">三段成績 (25%)：</label>
+            <input type="number" id="scoreD" min="0" max="100" placeholder="0-100">
+            <div class="checkbox-container">
+                <input type="checkbox" id="noneD" onchange="toggleInput('scoreD', this)">
+                <label for="noneD">尚無成績</label>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="input-row">
+            <label for="scoreE">平時成績 (30%)：</label>
+            <input type="number" id="scoreE" min="0" max="100" placeholder="0-100">
+            <div class="checkbox-container">
+                <input type="checkbox" id="noneE" onchange="toggleInput('scoreE', this)">
+                <label for="noneE">尚無成績</label>
+            </div>
+        </div>
+    </div>
+    <button onclick="calculateScore()">計算學期成績</button>
+    <div id="result" class="result-box"></div>
+</div>
+
+<script>
+    function toggleInput(inputId, checkbox) {
+        const input = document.getElementById(inputId);
+        if (checkbox.checked) { input.disabled = true; input.value = ''; }
+        else { input.disabled = false; }
+    }
+    function getScore(inputId, isNone) {
+        if (isNone) return -1;
+        const val = document.getElementById(inputId).value;
+        if (val === '') return -1;
+        const num = parseFloat(val);
+        if (num < 0 || num > 100) return -1;
+        return num;
+    }
+    function calculateScore() {
+        const a = getScore('scoreA', document.getElementById('noneA').checked);
+        const b = getScore('scoreB', document.getElementById('noneB').checked);
+        const c = getScore('scoreC', document.getElementById('noneC').checked);
+        const d = getScore('scoreD', document.getElementById('noneD').checked);
+        const e = getScore('scoreE', document.getElementById('noneE').checked);
+        const resultDiv = document.getElementById('result');
+        resultDiv.className = 'result-box';
+        resultDiv.style.display = 'block';
+        const validA = (0 <= a && a <= 100);
+        const validB = (0 <= b && b <= 100);
+        const validC = (0 <= c && c <= 100);
+        const validD = (0 <= d && d <= 100);
+        const validE = (0 <= e && e <= 100);
+
+        if (validA && validB && validC && validD && validE) {[span_0](start_span)[span_0](end_span)
+            let f = (a * 0.05) + (b * 0.2) + (c * 0.2) + (d * 0.25) + (e * 0.3);[span_1](start_span)[span_1](end_span)
+            f = Math.round(f * 100) / 100;
+            if (f >= 60) { resultDiv.className += ' pass'; resultDiv.innerHTML = `恭喜你已經過了，你的學期成績為: ${f} 分`; }[span_2](start_span)[span_2](end_span)
+            else if (f >= 40 && f < 60) { resultDiv.className += ' warning'; resultDiv.innerHTML = `很抱歉你沒有過，不過可以補考，你的學期成績為: ${f} 分`; }[span_3](start_span)[span_3](end_span)
+            else { resultDiv.className += ' fail'; resultDiv.innerHTML = `很抱歉你無法補考，你的學期成績為: ${f} 分`; }[span_4](start_span)[span_4](end_span)
+        }
+        else if (validA && validB && validC && validD && !validE) {[span_5](start_span)[span_5](end_span)
+            let f = (a * 0.05) + (b * 0.2) + (c * 0.2) + (d * 0.25);[span_6](start_span)[span_6](end_span)
+            f = Math.round(f * 100) / 100;
+            if (f >= 60) { resultDiv.className += ' pass'; resultDiv.innerHTML = `恭喜你已經過了，目前你的學期成績為: ${f} 分`; }
+            else {
+                let g = Math.round(((60 - f) / 0.3) * 100) / 100;
+                if (f >= 40 && f < 60) { resultDiv.className += ' warning'; resultDiv.innerHTML = `你目前還沒過，不過平時成績拿 <strong>${g}</strong> 分就可以過，目前的學期成績為: ${f} 分`; }
+                else {
+                    let h = Math.round(((40 - f) / 0.3) * 100) / 100;
+                    resultDiv.className += ' fail'; resultDiv.innerHTML = `你目前還沒過，不過平時成績拿 <strong>${g}</strong> 分就可以過，拿 <strong>${h}</strong> 分就能補考，目前的學期成績為: ${f} 分`;
+                }
+            }
+        }
+        else if (validA && validB && validC && !validD && !validE) {
+            let f = (a * 0.05) + (b * 0.2) + (c * 0.2);
+            f = Math.round(f * 100) / 100;
+            let g = Math.round(((60 - f) / 0.3) * 100) / 100;
+            if (f >= 40 && f < 60) { resultDiv.className += ' warning'; resultDiv.innerHTML = `你目前還沒過，不過後續努力拿 <strong>${g}</strong> 分就可以過，目前的學期成績為: ${f} 分`; }
+            else {
+                let h = Math.round(((40 - f) / 0.3) * 100) / 100;
+                resultDiv.className += ' fail'; resultDiv.innerHTML = `你目前還沒過，不過後續努力拿 <strong>${g}</strong> 分就可以過，拿 <strong>${h}</strong> 分就能補考，目前的學期成績為: ${f} 分`;
+            }
+        }
+        else if (validA && validB && validC && !validD && validE) {
+            let f = (a * 0.05) + (b * 0.2) + (c * 0.2) + (e * 0.3);
+            f = Math.round(f * 100) / 100;
+            if (f >= 60) { resultDiv.className += ' pass'; resultDiv.innerHTML = `恭喜你已經過了，你的學期成績為: ${f} 分`; }
+            else {
+                let g = Math.round(((60 - f) / 0.25) * 100) / 100;
+                if (f >= 40 && f < 60) { resultDiv.className += ' warning'; resultDiv.innerHTML = `你目前還沒過，不過三段拿 <strong>${g}</strong> 分就可以過，目前的學期成績為: ${f} 分`; }
+                else {
+                    let h = Math.round(((40 - f) / 0.25) * 100) / 100;
+                    resultDiv.className += ' fail'; resultDiv.innerHTML = `你目前還沒過，不過三段拿 <strong>${g}</strong> 分就可以過，拿 <strong>${h}</strong> 分就能補考，目前的學期成績為: ${f} 分`;
+                }
+            }
+        }
+        else {
+            resultDiv.className += ' fail';
+            resultDiv.innerHTML = '【錯誤提示】目前的分數組合不符合原本 Python 的計算公式（例如：不能同時缺少一段和二段）。請確保只勾選「尚無三段」或「尚無平時」！';
+        }
+    }
+</script>
+</body>
+</html>
